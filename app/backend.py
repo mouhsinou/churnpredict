@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-import pickle
+from joblib import load
 import numpy as np
 import pandas as pd
 # Charger le modèle
-model = pickle.load(open('churn_model.pkl', 'rb'))
-
+#model = pickle.load(open('churn_model.pkl', 'rb'))
+model = load('churn_model.joblib')
 app = FastAPI()
 
 # Définir la structure des données d'entrée
