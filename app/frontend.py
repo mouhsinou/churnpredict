@@ -1,28 +1,30 @@
 import streamlit as st
 import requests
 
-st.title("Prédiction du comportement des  Clients")
+# Titre de l'application
+st.title("Prédiction du Comportement des Clients")
 
-# Saisie des informations client
+# Formulaire pour saisir les informations des clients
+st.header("Informations Client")
 gender = st.selectbox("Genre", ["Male", "Female"])
 SeniorCitizen = st.selectbox("Senior Citizen", [0, 1])
-Partner = st.selectbox("Partner", ["Yes", "No"])
-Dependents = st.selectbox("Dependents", ["Yes", "No"])
-tenure = st.number_input("Tenure (mois)", min_value=0, max_value=100)
-PhoneService = st.selectbox("Phone Service", ["Yes", "No"])
-MultipleLines = st.selectbox("Multiple Lines", ["Yes", "No", "No phone service"])
-InternetService = st.selectbox("Internet Service", ["DSL", "Fiber optic", "No"])
-OnlineSecurity = st.selectbox("Online Security", ["Yes", "No", "No internet service"])
-OnlineBackup = st.selectbox("Online Backup", ["Yes", "No", "No internet service"])
-DeviceProtection = st.selectbox("Device Protection", ["Yes", "No", "No internet service"])
-TechSupport = st.selectbox("Tech Support", ["Yes", "No", "No internet service"])
+Partner = st.selectbox("Partenaire", ["Yes", "No"])
+Dependents = st.selectbox("Dépendants", ["Yes", "No"])
+tenure = st.number_input("Durée d'adhésion (mois)", min_value=0, max_value=100)
+PhoneService = st.selectbox("Service Téléphonique", ["Yes", "No"])
+MultipleLines = st.selectbox("Lignes Multiples", ["Yes", "No", "No phone service"])
+InternetService = st.selectbox("Service Internet", ["DSL", "Fiber optic", "No"])
+OnlineSecurity = st.selectbox("Sécurité en Ligne", ["Yes", "No", "No internet service"])
+OnlineBackup = st.selectbox("Sauvegarde en Ligne", ["Yes", "No", "No internet service"])
+DeviceProtection = st.selectbox("Protection des Appareils", ["Yes", "No", "No internet service"])
+TechSupport = st.selectbox("Support Technique", ["Yes", "No", "No internet service"])
 StreamingTV = st.selectbox("Streaming TV", ["Yes", "No", "No internet service"])
-StreamingMovies = st.selectbox("Streaming Movies", ["Yes", "No", "No internet service"])
-Contract = st.selectbox("Contract", ["Month-to-month", "One year", "Two year"])
-PaperlessBilling = st.selectbox("Paperless Billing", ["Yes", "No"])
-PaymentMethod = st.selectbox("Payment Method", ["Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"])
-MonthlyCharges = st.number_input("Monthly Charges", min_value=0.0)
-TotalCharges = st.number_input("Total Charges", min_value=0.0)
+StreamingMovies = st.selectbox("Streaming Films", ["Yes", "No", "No internet service"])
+Contract = st.selectbox("Contrat", ["Month-to-month", "One year", "Two year"])
+PaperlessBilling = st.selectbox("Facturation sans papier", ["Yes", "No"])
+PaymentMethod = st.selectbox("Méthode de Paiement", ["Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"])
+MonthlyCharges = st.number_input("Frais Mensuels", min_value=0.0)
+TotalCharges = st.number_input("Frais Totaux", min_value=0.0)
 
 # Créer un dictionnaire avec les données
 data = {
@@ -48,30 +50,29 @@ data = {
 }
 
 # Faire la prédiction
-if st.button("Predict"):
-    response = requests.post("http://localhost:8000/predict", json=data)
-    result = response.json()
-    prediction_proba = result["probability"]
-    st.write("Probabilité = ", prediction_proba)
+if st.button("Prédire"):
+    try:
+        response = requests.post("https://msnchurnpredict.onrender.com/predict", json=data)
+        response.raise_for_status()  # Vérifie s'il y a des erreurs HTTP
+        result = response.json()
+        prediction_proba = result["probability"]
+        st.write(f"Probabilité de churn: {prediction_proba:.2f}")
 
-    # Affichage du résultat avec des messages de succès, avertissement et erreur
-    if prediction_proba < 0.33:
-        st.success("Le client n'est pas susceptible de vous quitter. ")
-    elif 0.33 <= prediction_proba < 0.67:
-        st.warning("Le client a un risque moyen de vous quitter.")
-    else:
-        st.error("Le client est susceptible de vous quitter.")
+        # Affichage du résultat avec des messages de succès, avertissement et erreur
+        if prediction_proba < 0.33:
+            st.success("Le client n'est pas susceptible de vous quitter.")
+        elif 0.33 <= prediction_proba < 0.67:
+            st.warning("Le client a un risque moyen de vous quitter.")
+        else:
+            st.error("Le client est susceptible de vous quitter.")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Erreur dans l'appel de l'API: {e}")
 
-
-# Sidebar
-st.sidebar.write("**Mes Coordonnées :**")
-st.sidebar.write("**Nom:** MAMA Moussinou")
-st.sidebar.write("**Email:** mamamouhsinou@gmail.com")
-st.sidebar.write("**Téléphone:** +229 95231680")
-st.sidebar.write("**LinkedIn:** moussinou-mama-8b6270284")
-
-# Ajouter une photo
-#sst.sidebar.image("mm.png", caption='MAMA Moussinou')
-
-# Ajouter un message sous la photo
-st.write("**Made by MAMA Moussinou**")
+# Sidebar avec les coordonnées
+with st.sidebar:
+    st.write("**Mes Coordonnées :**")
+    st.write("**Nom:** MAMA Moussinou")
+    st.write("**Email:** mamamouhsinou@gmail.com")
+    st.write("**Téléphone:** +229 95231680")
+    st.write("**LinkedIn:** [moussinou-mama-8b6270284](https://www.linkedin.com/in/moussinou-mama-8b6270284/)")
+    st.image("mm.png", caption='MAMA Moussinou', width=150)
