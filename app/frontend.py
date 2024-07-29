@@ -75,4 +75,4 @@ with st.sidebar:
     st.write("**Email:** mamamouhsinou@gmail.com")
     st.write("**Téléphone:** +229 95231680")
     st.write("**LinkedIn:** [moussinou-mama-8b6270284](https://www.linkedin.com/in/moussinou-mama-8b6270284/)")
-    st.image("mm.png", caption='MAMA Moussinou', width=150)
+    #st.image("mm.png", caption='MAMA Moussinou', width=150)
